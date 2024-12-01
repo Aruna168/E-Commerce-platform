@@ -1,0 +1,297 @@
+package ecommerceAppAWT;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class EcommerceAppAWT extends Frame implements ActionListener {
+
+    // Login and Registration Components
+    TextField usernameField, passwordField, searchField;
+    Button loginButton, registerButton, searchButton;
+    Label messageLabel;
+
+    // Product and Cart Details
+    ArrayList<Product> products = new ArrayList<>();
+    ArrayList<Product> cart = new ArrayList<>();
+    HashMap<String, String> users = new HashMap<>();
+
+    // Panels for Switching Views
+    Panel loginPanel, mainPanel, productPanel;
+
+    // Constructor
+    public EcommerceAppAWT() {
+        setTitle("E-Commerce Application");
+        setSize(1000, 700);
+        setLayout(null);
+        setBackground(new Color(250, 250, 250));
+
+        initLoginPage();
+        initMainPage();
+        loadProducts();
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+
+        setVisible(true);
+    }
+
+    private void initLoginPage() {
+        loginPanel = new Panel(null);
+        loginPanel.setBounds(0, 0, 1000, 700);
+        loginPanel.setBackground(new Color(240, 248, 255));
+        add(loginPanel);
+
+        Label titleLabel = new Label("Welcome to E-Shop");
+        titleLabel.setBounds(350, 50, 300, 50);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setAlignment(Label.CENTER);
+        loginPanel.add(titleLabel);
+
+        Label usernameLabel = new Label("Username:");
+        usernameLabel.setBounds(300, 150, 100, 30);
+        loginPanel.add(usernameLabel);
+
+        usernameField = new TextField();
+        usernameField.setBounds(400, 150, 200, 30);
+        loginPanel.add(usernameField);
+
+        Label passwordLabel = new Label("Password:");
+        passwordLabel.setBounds(300, 200, 100, 30);
+        loginPanel.add(passwordLabel);
+
+        passwordField = new TextField();
+        passwordField.setBounds(400, 200, 200, 30);
+        passwordField.setEchoChar('*');
+        loginPanel.add(passwordField);
+
+        loginButton = new Button("Login");
+        loginButton.setBounds(350, 250, 100, 30);
+        loginButton.addActionListener(this);
+        loginPanel.add(loginButton);
+
+        registerButton = new Button("Register");
+        registerButton.setBounds(470, 250, 100, 30);
+        registerButton.addActionListener(this);
+        loginPanel.add(registerButton);
+
+        messageLabel = new Label("");
+        messageLabel.setBounds(300, 300, 400, 30);
+        messageLabel.setForeground(Color.RED);
+        loginPanel.add(messageLabel);
+    }
+
+    private void initMainPage() {
+        mainPanel = new Panel(null);
+        mainPanel.setBounds(0, 0, 1000, 700);
+        mainPanel.setBackground(new Color(245, 245, 245));
+        mainPanel.setVisible(false);
+        add(mainPanel);
+
+        searchField = new TextField();
+        searchField.setBounds(50, 20, 400, 30);
+        mainPanel.add(searchField);
+
+        searchButton = new Button("Search");
+        searchButton.setBounds(470, 20, 80, 30);
+        searchButton.addActionListener(this);
+        mainPanel.add(searchButton);
+
+        ScrollPane scrollPane = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+        scrollPane.setBounds(50, 70, 900, 500);
+        scrollPane.setBackground(Color.WHITE);
+
+        productPanel = new Panel(new GridLayout(0, 1, 10, 10)); // Adjusted layout for proper spacing
+        productPanel.setBackground(Color.WHITE);
+
+        scrollPane.add(productPanel); // Adding productPanel to the ScrollPane
+        mainPanel.add(scrollPane);
+
+        Button viewCartButton = new Button("View Cart");
+        viewCartButton.setBounds(800, 20, 100, 30);
+        viewCartButton.addActionListener(e -> showCart());
+        mainPanel.add(viewCartButton);
+    }
+
+
+    private void loadProducts() {
+        products.add(new Product("Laptop", "High-Performance Laptop", 999.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\laptop.jpeg"));
+        products.add(new Product("Phone", "Smartphone with Great Camera", 699.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\phone.jpg"));
+        products.add(new Product("Headphones", "Noise Cancelling Headphones", 199.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\headphones.jpeg"));
+        products.add(new Product("Watch", "Smartwatch with Fitness Features", 299.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\watch.jpeg"));
+        products.add(new Product("Bluetooth Speaker", "Portable speaker with excellent sound quality", 49.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\bluetooth speaker.jpeg"));
+        products.add(new Product("Camera", "DSLR camera for high-quality photography", 549.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\camera.jpeg"));
+        products.add(new Product("Electric Kettle", "Quick heating electric kettle, 1.5L capacity", 29.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\electric kettle.jpg"));
+        products.add(new Product("Fitness Tracker", "Track your health and fitness activities", 99.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\fitness tracker.webp"));
+        products.add(new Product("Gaming Console", "Next-gen console for immersive gaming", 499.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\gaming console.jpeg"));
+        products.add(new Product("Gaming Laptop", "High-performance laptop for gaming", 1299.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\gaming laptop.jpg"));
+        products.add(new Product("Smart TV", "4K UHD TV with smart features", 799.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\smart tv.jpeg"));
+        products.add(new Product("Tablet", "Lightweight and portable tablet for work and play", 299.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\tablet.jpeg"));
+        products.add(new Product("Smart Refrigerator", "Energy-efficient fridge with smart controls", 1199.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\smart refrigerator.jpg"));
+        products.add(new Product("Wireless Earbuds", "Noise-cancelling earbuds with long battery life", 79.99, "C:\\Users\\asus\\eclipse-workspace\\ecommerceAppAWT\\images\\wireless earbuds.jpeg"));
+
+        displayAllProducts();
+    }
+
+    private void displayAllProducts() {
+        productPanel.removeAll();
+        for (Product product : products) {
+            createProductPanel(product);
+        }
+        productPanel.revalidate();
+        productPanel.repaint();
+    }
+
+    private void createProductPanel(Product product) {
+        Panel singleProductPanel = new Panel(null);
+        singleProductPanel.setBackground(new Color(230, 230, 250));
+        singleProductPanel.setSize(900, 150);
+
+        // Product Image
+        try {
+            Image img = Toolkit.getDefaultToolkit().getImage(product.imagePath);
+            Canvas imageCanvas = new Canvas() {
+                @Override
+                public void paint(Graphics g) {
+                    g.drawImage(img, 10, 10, 120, 120, this);
+                }
+            };
+            imageCanvas.setBounds(10, 10, 120, 120);
+            singleProductPanel.add(imageCanvas);
+        } catch (Exception e) {
+            Label noImageLabel = new Label("No Image");
+            noImageLabel.setBounds(10, 10, 120, 120);
+            singleProductPanel.add(noImageLabel);
+        }
+
+        // Product Name
+        Label nameLabel = new Label(product.name);
+        nameLabel.setBounds(150, 20, 300, 20);
+        nameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        singleProductPanel.add(nameLabel);
+
+        // Product Price
+        Label priceLabel = new Label("Price: $" + product.price);
+        priceLabel.setBounds(150, 50, 200, 20);
+        priceLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        singleProductPanel.add(priceLabel);
+
+        // Product Description
+        Label descriptionLabel = new Label(product.description);
+        descriptionLabel.setBounds(150, 80, 400, 20); // Adjust the size and alignment as needed
+        descriptionLabel.setFont(new Font("Arial", Font.ITALIC, 12));
+        singleProductPanel.add(descriptionLabel);
+
+        // Add to Cart Button
+        Button addToCartButton = new Button("Add to Cart");
+        addToCartButton.setBounds(150, 110, 100, 30);
+        addToCartButton.addActionListener(e -> {
+            cart.add(product);
+            showMessage("Added to Cart: " + product.name);
+        });
+        singleProductPanel.add(addToCartButton);
+
+        // Buy Now Button
+        Button buyNowButton = new Button("Buy Now");
+        buyNowButton.setBounds(270, 110, 100, 30);
+        buyNowButton.addActionListener(e -> showMessage("Purchased: " + product.name));
+        singleProductPanel.add(buyNowButton);
+
+        productPanel.add(singleProductPanel);
+    }
+
+
+    private void showCart() {
+        Dialog dialog = new Dialog(this, "Cart Details", true);
+        dialog.setSize(400, 300);
+        dialog.setLayout(new BorderLayout());
+
+        TextArea cartDetailsArea = new TextArea();
+        double total = 0;
+        for (Product product : cart) {
+            cartDetailsArea.append(product.name + " - $" + product.price + "\n");
+            total += product.price;
+        }
+        cartDetailsArea.append("\nTotal: $" + total);
+        cartDetailsArea.setEditable(false);
+
+        dialog.add(cartDetailsArea, BorderLayout.CENTER);
+
+        Button okButton = new Button("OK");
+        okButton.addActionListener(e -> dialog.dispose());
+        dialog.add(okButton, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+
+    private void showMessage(String message) {
+        Dialog dialog = new Dialog(this, "Message", true);
+        dialog.setSize(400, 200);
+        dialog.setLayout(new BorderLayout());
+
+        Label messageLabel = new Label(message, Label.CENTER);
+        dialog.add(messageLabel, BorderLayout.CENTER);
+
+        Button okButton = new Button("OK");
+        okButton.addActionListener(e -> dialog.dispose());
+        dialog.add(okButton, BorderLayout.SOUTH);
+
+        dialog.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == loginButton) {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            if (users.containsKey(username) && users.get(username).equals(password)) {
+                loginPanel.setVisible(false);
+                mainPanel.setVisible(true);
+            } else {
+                showMessage("Invalid credentials. Please try again!");
+            }
+        } else if (e.getSource() == registerButton) {
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+            if (users.containsKey(username)) {
+                showMessage("User already exists!");
+            } else {
+                users.put(username, password);
+                showMessage("Registration successful!");
+            }
+        } else if (e.getSource() == searchButton) {
+            String searchQuery = searchField.getText().trim().toLowerCase();
+            productPanel.removeAll();
+            for (Product product : products) {
+                if (product.name.toLowerCase().contains(searchQuery)) {
+                    createProductPanel(product);
+                }
+            }
+            productPanel.revalidate();
+            productPanel.repaint();
+        }
+    }
+
+    public static void main(String[] args) {
+        new EcommerceAppAWT();
+    }
+}
+
+class Product {
+    String name;
+    String description;
+    double price;
+    String imagePath;
+
+    Product(String name, String description, double price, String imagePath) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imagePath = imagePath;
+    }
+}
